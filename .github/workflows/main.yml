@@ -16,3 +16,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
+      - name: Install emsdk
+        uses: mymindstorm/setup-emsdk@v9
+      
+      - name: Check emsdk version
+        run: emcc -v
