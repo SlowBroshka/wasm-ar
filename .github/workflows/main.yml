@@ -40,6 +40,8 @@ jobs:
       - name: Activate Emscripten
         run: emcmake sh -c 'echo ${EMSCRIPTEN}'
 
+        # https://github.com/opencv/opencv/issues/19493
+        # Replace 'args = parser.parse_args()/args' -> 'args, _ = parser.parse_known_args()'
       - name: Build opencv_js
         run: |
           git clone https://github.com/opencv/opencv.git
@@ -47,3 +49,22 @@ jobs:
           sed -i 's/args = parser.parse_args()/args, _ = parser.parse_known_args()/' ./platforms/js/build_js.py
           emcmake python ./platforms/js/build_js.py build_wasm --build_wasm
           cd -
+       
+      - name: Build WASM
+        run: |
+          ls -la
+          ./build.sh
+          ls -la
+
+  deploy:
+    name: Deploy
+    needs: setup
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: production-files
+          path: ./js
