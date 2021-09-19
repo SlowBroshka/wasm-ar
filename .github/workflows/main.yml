@@ -17,6 +17,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         
+      - name: Install Python
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          
+      - name: Check python version
+        run: python --version
+        
       - name: Install emsdk
         uses: mymindstorm/setup-emsdk@v9
       
