@@ -26,8 +26,15 @@ jobs:
       - name: Install Emscripten
         run: emsdk install latest
         
-      - name: Install Emscripten
+      - name: Activate Emscripten
         run: emsdk activate latest
       
-#       - name: Install openCV
-#         run: git clone https://github.com/opencv/opencv.git
+      - name: Activate Emscripten
+        run: emcmake sh -c 'echo ${EMSCRIPTEN}'
+
+      - name: Build opencv_js
+        run: |
+          git clone https://github.com/opencv/opencv.git
+          cd opencv
+          python ./platforms/js/build_js.py build_wasm --build_wasm
+          cd -
