@@ -44,5 +44,6 @@ jobs:
         run: |
           git clone https://github.com/opencv/opencv.git
           cd opencv
+          sed -i 's/args = parser.parse_args()/args, _ = parser.parse_known_args()/' ./platforms/js/build_js.py
           emcmake python ./platforms/js/build_js.py build_wasm --build_wasm
           cd -
