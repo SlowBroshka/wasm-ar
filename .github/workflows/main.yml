@@ -36,5 +36,5 @@ jobs:
         run: |
           git clone https://github.com/opencv/opencv.git
           cd opencv
-          python ./platforms/js/build_js.py build_wasm --build_wasm
+          emcmake python ./platforms/js/build_js.py build_wasm --build_wasm
           cd -
