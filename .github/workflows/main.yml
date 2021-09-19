@@ -22,3 +22,12 @@ jobs:
       
       - name: Check emsdk version
         run: emcc -v
+      
+      - name: Install Emscripten
+        run: emsdk install latest
+        
+      - name: Install Emscripten
+        run: emsdk activate latest
+      
+#       - name: Install openCV
+#         run: git clone https://github.com/opencv/opencv.git
