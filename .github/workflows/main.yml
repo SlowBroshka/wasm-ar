@@ -2,9 +2,11 @@ name: CI
 
 on:
   push:
-    branches: master
+    branches:
+      - master
   pull_request:
-    branches: master
+    branches:
+      - master
 
 jobs:
   setup:
@@ -13,10 +15,4 @@ jobs:
 
     steps:
       - name: Checkout code
-      - uses: actions/checkout@v2
-
-      - name: Install emsdk
-      - uses: mymindstorm/setup-emsdk@v9
-      
-      - name: Check emsdk version
-        run: emcc -v
+        uses: actions/checkout@v2
