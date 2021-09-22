@@ -54,6 +54,9 @@ jobs:
         run: |
           ./build.sh
           
+      - name: Copy OpenCV bin to js for artifact
+        run: cp -R opencv/build_wasm/bin js/opencv
+
       - name: Upload WASM
         uses: actions/upload-artifact@v1
         with:
@@ -67,6 +70,10 @@ jobs:
     if: github.ref == 'refs/heads/master'
 
     steps:
+
+      - name: Copy OpenCV bin to js for artifact
+        run: cp -R opencv/build_wasm/bin js/opencv
+    
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
