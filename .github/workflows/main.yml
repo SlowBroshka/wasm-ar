@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+          
+      - name: Check python version
+        run: python --version
+        
+      - name: Install emsdk
+        uses: mymindstorm/setup-emsdk@v9
+      
+      - name: Check emsdk version
+        run: emcc -v
+      
+      - name: Install Emscripten
+        run: emsdk install latest
+        
+      - name: Activate Emscripten
+        run: emsdk activate latest
+      
+      - name: Activate Emscripten
+        run: emcmake sh -c 'echo ${EMSCRIPTEN}'
+
+        # https://github.com/opencv/opencv/issues/19493
+        # Replace 'args = parser.parse_args()/args' -> 'args, _ = parser.parse_known_args()'
+      - name: Build opencv_js
+        run: |
+          git clone https://github.com/opencv/opencv.git
+          cd opencv
+          sed -i 's/args = parser.parse_args()/args, _ = parser.parse_known_args()/' ./platforms/js/build_js.py
+          emcmake python ./platforms/js/build_js.py build_wasm --build_wasm
+          cd -
+       
+      - name: Build WASM
+        run: |
+          ./build.sh
+          
+      - name: Copy OpenCV bin to js for artifact
+        run: cp -R opencv/build_wasm/bin js/opencv
+
+      - name: Upload WASM
+        uses: actions/upload-artifact@v1
+        with:
+          name: release-wasm
+          path: ./js/
+
+  deploy:
+    name: Deploy
+    needs: setup
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+
+      - name: Copy OpenCV bin to js for artifact
+        run: cp -R opencv/build_wasm/bin js/opencv
+    
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: production-wasm
+          path: ./js/
